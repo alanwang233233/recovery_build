@@ -105,7 +105,7 @@ jobs:
             workspace/out/target/product/${{ env.DEVICE_NAME }}/*.zip
             workspace/out/target/product/${{ env.DEVICE_NAME }}/*vendor*.img
           name: TWRP-${{ env.DEVICE_NAME }}-${{ github.run_id }}
-          tag_name: ${{ github.run_id }}
+          tag_name: twrp-${{ github.run_id }}
           body: |
             Recovery name: TeamWin Recovery Project
             Manifest: ${{ env.MANIFEST_BRANCH }}

@@ -102,7 +102,7 @@ jobs:
             ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ env.DEVICE_NAME }}/*.img
             ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ env.DEVICE_NAME }}/*.zip
           name: OFRP-${{ env.DEVICE_NAME }}-${{ github.run_id }}
-          tag_name: ${{ github.run_id }}
+          tag_name: ofrp-${{ github.run_id }}
           body: |
             Recovery name: OrangeFox Recovery Project
             Manifest: ${{ env.MANIFEST_BRANCH }}

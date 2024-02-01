@@ -7,10 +7,6 @@ env:
   MANIFEST_URL: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni"
   MANIFEST_BRANCH: "twrp-9.0"
   DEVICE_TREE_URL: "https://github.com/CrackMiDrAi/twrp_device_tree"
-  DEVICE_TREE_BRANCH: "main"
-  DEVICE_PATH: "device/xiaomi/Archimedes"
-  DEVICE_NAME: "Archimedes"
-  MAKEFILE_NAME: "omni_Archimedes"
   BUILD_TARGET: "recovery"
 
 jobs:
@@ -18,6 +14,13 @@ jobs:
     runs-on: ubuntu-20.04
     permissions:
       contents: write
+    strategy:
+      matrix:
+        DEVICE_NAME: [ Archytas, Archimedes ]
+    env:
+      DEVICE_TREE_BRANCH: ${{ matrix.DEVICE_NAME }}
+      DEVICE_PATH: "device/xiaomi/${{ matrix.DEVICE_NAME }}"
+      MAKEFILE_NAME: "omni_${{ matrix.DEVICE_NAME }}"
     steps:
       - name: Display Run Parameters
         run: |
@@ -27,7 +30,7 @@ jobs:
           echo "Device Tree URL: ${{ env.DEVICE_TREE_URL }}"
           echo "Device Tree Branch: ${{ env.DEVICE_TREE_BRANCH }}"
           echo "Device Path: ${{ env.DEVICE_PATH }}"
-          echo "Device Name: ${{ env.DEVICE_NAME }}"
+          echo "Device Name: ${{ matrix.DEVICE_NAME }}"
           echo "Makefile Name: ${{ env.MAKEFILE_NAME }}"
           echo "Build Target: ${{ env.BUILD_TARGET }}.img"
           echo "::endgroup::"
@@ -101,15 +104,15 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            workspace/out/target/product/${{ env.DEVICE_NAME }}/${{ env.BUILD_TARGET }}.img
-            workspace/out/target/product/${{ env.DEVICE_NAME }}/*.zip
-            workspace/out/target/product/${{ env.DEVICE_NAME }}/*vendor*.img
-          name: TWRP-${{ env.DEVICE_NAME }}-${{ github.run_id }}
-          tag_name: twrp-${{ github.run_id }}
+            workspace/out/target/product/${{ matrix.DEVICE_NAME }}/${{ env.BUILD_TARGET }}.img
+            workspace/out/target/product/${{ matrix.DEVICE_NAME }}/*.zip
+            workspace/out/target/product/${{ matrix.DEVICE_NAME }}/*vendor*.img
+          name: TWRP-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
+          tag_name: twrp-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
           body: |
             Recovery name: TeamWin Recovery Project
             Manifest: ${{ env.MANIFEST_BRANCH }}
-            Device: ${{ env.DEVICE_NAME }}
+            Device: ${{ matrix.DEVICE_NAME }}
             Target: ${{ env.BUILD_TARGET }}.img
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

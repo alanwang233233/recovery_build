@@ -7,10 +7,6 @@ env:
   SYNC_URL: "https://gitlab.com/OrangeFox/sync.git"
   MANIFEST_BRANCH: "9.0"
   DEVICE_TREE_URL: "https://github.com/CrackMiDrAi/twrp_device_tree"
-  DEVICE_TREE_BRANCH: "main"
-  DEVICE_PATH: "device/xiaomi/Archimedes"
-  DEVICE_NAME: "Archimedes"
-  MAKEFILE_NAME: "omni_Archimedes"
   BUILD_TARGET: "recovery"
 
 jobs:
@@ -18,6 +14,13 @@ jobs:
     runs-on: ubuntu-20.04
     permissions:
       contents: write
+    strategy:
+      matrix:
+        DEVICE_NAME: [ Archytas, Archimedes ]
+    env:
+      DEVICE_TREE_BRANCH: ${{ matrix.DEVICE_NAME }}
+      DEVICE_PATH: "device/xiaomi/${{ matrix.DEVICE_NAME }}"
+      MAKEFILE_NAME: "omni_${{ matrix.DEVICE_NAME }}"
     steps:
       - name: Display Run Parameters
         run: |
@@ -26,7 +29,7 @@ jobs:
           echo "Device Tree URL: ${{ env.DEVICE_TREE_URL }}"
           echo "Device Tree Branch: ${{ env.DEVICE_TREE_BRANCH }}"
           echo "Device Path: ${{ env.DEVICE_PATH }}"
-          echo "Device Name: ${{ env.DEVICE_NAME }}"
+          echo "Device Name: ${{ matrix.DEVICE_NAME }}"
           echo "Makefile Name: ${{ env.MAKEFILE_NAME }}"
           echo "Build Target: ${{ env.BUILD_TARGET }}.img"
           echo "::endgroup::"
@@ -93,20 +96,20 @@ jobs:
         run: |
           ls -al ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/
           echo
-          ls -al ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ env.DEVICE_NAME }}/
+          ls -al ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ matrix.DEVICE_NAME }}/
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ env.DEVICE_NAME }}/*.img
-            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ env.DEVICE_NAME }}/*.zip
-          name: OFRP-${{ env.DEVICE_NAME }}-${{ github.run_id }}
-          tag_name: ofrp-${{ github.run_id }}
+            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ matrix.DEVICE_NAME }}/*.img
+            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ matrix.DEVICE_NAME }}/*.zip
+          name: OFRP-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
+          tag_name: ofrp-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
           body: |
             Recovery name: OrangeFox Recovery Project
             Manifest: ${{ env.MANIFEST_BRANCH }}
-            Device: ${{ env.DEVICE_NAME }}
+            Device: ${{ matrix.DEVICE_NAME }}
             Target: ${{ env.BUILD_TARGET }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

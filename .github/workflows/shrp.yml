@@ -8,7 +8,6 @@ env:
   MANIFEST_BRANCH: "v3_9.0"
   DEVICE_TREE: "https://github.com/CrackMiDrAi/twrp_device_tree"
   BUILD_TARGET: "recovery"
-  LDCHECK: false
 
 jobs:
   build:

@@ -2,6 +2,7 @@
 
 [![Build TWRP](https://github.com/CrackMiDrAi/recovery_build/actions/workflows/twrp.yml/badge.svg)](https://github.com/CrackMiDrAi/recovery_build/actions/workflows/twrp.yml)
 [![Build OFRP](https://github.com/CrackMiDrAi/recovery_build/actions/workflows/ofrp.yml/badge.svg)](https://github.com/CrackMiDrAi/recovery_build/actions/workflows/ofrp.yml)
+[![Build SHRP](https://github.com/CrackMiDrAi/recovery_build/actions/workflows/shrp.yml/badge.svg)](https://github.com/CrackMiDrAi/recovery_build/actions/workflows/shrp.yml)
 
 This repo is used to build recovery images for Xiaomi Archimedes via GitHub Actions.
 
@@ -12,6 +13,7 @@ If you want to contribute to the device tree, you can go [here](https://github.c
 ## Thanks
 * [twrp.yml](.github/workflows/twrp.yml) originally forked from [azwhikaru/Action-TWRP-Builder](https://github.com/azwhikaru/Action-TWRP-Builder)
 * [ofrp.yml](.github/workflows/ofrp.yml) originally forked from [azwhikaru/Action-OFRP-Builder](https://github.com/azwhikaru/Action-OFRP-Builder)
+* [shrp.yml](.github/workflows/shrp.yml) originally forked from [lazycodebuilder/Lazy_Action-Recoverys-Builder](https://github.com/lazycodebuilder/Lazy_Action-Recoverys-Builder)
 
 ## License
 

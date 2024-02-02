@@ -1,0 +1,130 @@
+name: Build SHRP
+
+on:
+  workflow_dispatch
+
+env:
+  MANIFEST: "https://github.com/SHRP/manifest.git"
+  MANIFEST_BRANCH: "v3_9.0"
+  DEVICE_TREE: "https://github.com/CrackMiDrAi/twrp_device_tree"
+  BUILD_TARGET: "recovery"
+  LDCHECK: false
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        DEVICE_NAME: [ Archytas, Archimedes ]
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DEVICE_TREE_BRANCH: ${{ matrix.DEVICE_NAME }}
+      DEVICE_PATH: "device/xiaomi/${{ matrix.DEVICE_NAME }}"
+    steps:
+      - name: Display Run Parameters
+        run: |
+          echo "::group::User Environment Variables"
+          echo "Manifest Branch: ${{ env.MANIFEST_BRANCH }}"
+          echo "Device Tree: ${{ env.DEVICE_TREE }}"
+          echo "Device Branch: ${{ env.DEVICE_TREE_BRANCH }}"
+          echo "Device Path: ${{ env.DEVICE_PATH }}"
+          echo "Device Name: ${{ matrix.DEVICE_NAME }}"
+          echo "Build Target: ${{ env.BUILD_TARGET }}image"
+          echo "::endgroup::"
+
+      - name: Check Out
+        uses: actions/checkout@v3
+
+      - name: Cleanup
+        uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Prepare the environment
+        run: |
+          sudo apt-get update && apt-get upgrade
+          sudo apt-get install gperf gcc-multilib gcc-10-multilib g++-multilib g++-10-multilib libc6-dev lib32ncurses5-dev x11proto-core-dev libx11-dev tree lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc bc ccache lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libwxgtk3.0-gtk3-dev libxml2 lzop pngcrush schedtool squashfs-tools imagemagick libbz2-dev lzma ncftp qemu-user-static libstdc++-10-dev libtinfo5 libgflags-dev libncurses5 python3
+          sudo add-apt-repository universe
+
+      - name: Install OpenJDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: "8"
+
+      - name: Install Git-Repo
+        run: |
+          mkdir ~/bin
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          chmod a+x ~/bin/repo
+          sudo ln -sf ~/bin/repo /usr/bin/repo
+
+      - name: Initialize Repo
+        run: |
+          mkdir android-recovery
+          cd android-recovery
+          git config --global user.name "lazycodebuilder"
+          git config --global user.email "154446636+lazycodebuilder@users.noreply.github.com"
+          repo init --depth=1 -u ${{ env.MANIFEST }} -b ${{ env.MANIFEST_BRANCH }}
+
+      - name: Set build target for upload
+        run: |
+          if [ ${{ env.BUILD_TARGET }} == 'recovery' ]; then
+            echo "BUILD_TARGET_NAME=recovery" >> $GITHUB_ENV
+          elif [ ${{ env.BUILD_TARGET }} == 'boot' ]; then
+            echo "BUILD_TARGET_NAME=boot" >> $GITHUB_ENV
+          else
+            echo "BUILD_TARGET_NAME=vendor_boot" >> $GITHUB_ENV
+          fi
+
+      - name: Repo Sync
+        run: |
+          cd android-recovery
+          repo sync -j$(nproc --all) --force-sync
+
+      - name: Clone Device Tree
+        run: |
+          cd android-recovery
+          git clone ${{ env.DEVICE_TREE }} -b ${{ env.DEVICE_TREE_BRANCH }} ./${{ env.DEVICE_PATH }}
+
+      - name: Check Build Makefile
+        run: |
+          cd android-recovery
+          if [ -f ${{ env.DEVICE_PATH }}/twrp_${{ matrix.DEVICE_NAME}}.mk ]; then
+              echo "DEVICE_MAKEFILE=twrp_${{ matrix.DEVICE_NAME }}" >> $GITHUB_ENV
+          elif [ -f ${{ env.DEVICE_PATH }}/omni_${{ matrix.DEVICE_NAME}}.mk ]; then
+              echo "DEVICE_MAKEFILE=omni_${{ matrix.DEVICE_NAME }}" >> $GITHUB_ENV
+          else
+              echo "No recovery makefile file found!"
+          fi
+        continue-on-error: true
+
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 12
+
+      - name: Use Python2
+        run: sudo apt-get install python2 python-is-python2
+
+      - name: Building Image
+        run: |
+          cd android-recovery
+          source build/envsetup.sh
+          export ALLOW_MISSING_DEPENDENCIES=true
+          lunch ${{ env.DEVICE_MAKEFILE }}-eng && make clean && mka ${{ env.BUILD_TARGET }}image -j$(nproc --all)
+          echo "Done building your ${{ env.BUILD_TARGET }}.img"
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            android-recovery/out/target/product/${{ matrix.DEVICE_NAME }}/${{ env.BUILD_TARGET_NAME }}.img
+            android-recovery/out/target/product/${{ matrix.DEVICE_NAME }}/SHRP*.zip
+          name: SHRP-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
+          tag_name: shrp-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
+          body: |
+            Recovery name: SkyHawk Recovery Project
+            Manifest: ${{ env.MANIFEST_BRANCH }}
+            Device: ${{ matrix.DEVICE_NAME }}
+            Target: ${{ env.BUILD_TARGET }}

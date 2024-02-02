@@ -12,6 +12,7 @@ If you want to contribute to the device tree, you can go [here](https://github.c
 ## Thanks
 * [twrp.yml](.github/workflows/twrp.yml) originally forked from [azwhikaru/Action-TWRP-Builder](https://github.com/azwhikaru/Action-TWRP-Builder)
 * [ofrp.yml](.github/workflows/ofrp.yml) originally forked from [azwhikaru/Action-OFRP-Builder](https://github.com/azwhikaru/Action-OFRP-Builder)
+* [shrp.yml](.github/workflows/shrp.yml) originally forked from [lazycodebuilder/Lazy_Action-Recoverys-Builder](https://github.com/lazycodebuilder/Lazy_Action-Recoverys-Builder)
 
 ## License
 

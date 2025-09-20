@@ -50,7 +50,9 @@ jobs:
       - name: Prepare the build environment
         run: |
           sudo apt-get update
-          sudo apt-get install libtinfo5
+          sudo apt update
+          wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+          sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
           sudo ln -s /lib/x86_64-linux-gnu/libtinfo.so.6 /lib/x86_64-linux-gnu/libtinfo.so.5
           sudo apt-get install git aria2
           git clone https://gitlab.com/OrangeFox/misc/scripts

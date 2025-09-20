@@ -6,7 +6,7 @@ on:
 env:
   SYNC_URL: "https://gitlab.com/OrangeFox/sync.git"
   MANIFEST_BRANCH: "9.0"
-  DEVICE_TREE_URL: "https://github.com/CrackMiDrAi/twrp_device_tree"
+  DEVICE_TREE_URL: "https://github.com/alanwang233233/twrp_device_tree"
   BUILD_TARGET: "recovery"
 
 jobs:

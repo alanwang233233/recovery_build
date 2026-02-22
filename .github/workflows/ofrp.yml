@@ -62,7 +62,7 @@ jobs:
           # wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
           # apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
           # ln -s /lib/x86_64-linux-gnu/libtinfo.so.6 /lib/x86_64-linux-gnu/libtinfo.so.5
-          apt-get install -y git aria2 curl axel
+          apt-get install -y git aria2 curl axel wget unzip
           git clone https://gitlab.com/OrangeFox/misc/scripts
           cd scripts
           bash setup/android_build_env.sh
@@ -101,6 +101,7 @@ jobs:
           export ALLOW_MISSING_DEPENDENCIES=true
           set -e
           lunch ${{ env.MAKEFILE_NAME }}-eng && make clean && mka adbd ${{ env.BUILD_TARGET }}image -j$(nproc --all)
+        shell: bash
         working-directory: ${{ steps.pwd.outputs.workspace-folder }}
         continue-on-error: true
 

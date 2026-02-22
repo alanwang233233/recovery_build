@@ -52,17 +52,17 @@ jobs:
 
       - name: Prepare the build environment
         run: |
-          sudo apt-get update
-          sudo apt update
+          apt-get update
+          apt update
           # wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-          # sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
-          # sudo ln -s /lib/x86_64-linux-gnu/libtinfo.so.6 /lib/x86_64-linux-gnu/libtinfo.so.5
-          sudo apt-get install git aria2
+          # apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+          # ln -s /lib/x86_64-linux-gnu/libtinfo.so.6 /lib/x86_64-linux-gnu/libtinfo.so.5
+          apt-get install git aria2
           git clone https://gitlab.com/OrangeFox/misc/scripts
           cd scripts
-          sudo bash setup/android_build_env.sh
+          bash setup/android_build_env.sh
           sed -i 's/cd -/cd ../g' setup/install_android_sdk.sh
-          sudo bash setup/install_android_sdk.sh
+          bash setup/install_android_sdk.sh
         working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
       - name: Sync OrangeFox sources and minimal manifest
@@ -85,7 +85,7 @@ jobs:
           swap-size-gb: 12
 
       - name: Switch to Python2
-        run: sudo apt-get install python2 python-is-python2
+        run: apt-get install python2 python-is-python2
         continue-on-error: true
 
       - name: Building recovery

@@ -15,6 +15,8 @@ jobs:
     container:
         image: ubuntu:20.04
         options: --privileged
+        env:
+          DEBIAN_FRONTEND: noninteractive
     permissions:
       contents: write
     strategy:
@@ -53,7 +55,7 @@ jobs:
       - name: Prepare the build environment
         run: |
           apt-get update
-          apt update
+          apt-get upgrade -y
           # wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
           # apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
           # ln -s /lib/x86_64-linux-gnu/libtinfo.so.6 /lib/x86_64-linux-gnu/libtinfo.so.5

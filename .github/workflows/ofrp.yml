@@ -12,6 +12,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+        image: ubuntu:18.04
+        options: --privileged
     permissions:
       contents: write
     strategy:
@@ -69,13 +72,6 @@ jobs:
           cd sync/legacy
           ./orangefox_sync_legacy.sh --branch ${{ env.MANIFEST_BRANCH }} --path ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}
         working-directory: ${{ steps.pwd.outputs.workspace-folder }}
-
-
-      - name: Install External Dependencies For Modern Linux
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libtinfo5 libncurses5
-
 
       - name: Clone device tree
         run: |

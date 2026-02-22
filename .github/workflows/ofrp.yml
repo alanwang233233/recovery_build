@@ -59,7 +59,7 @@ jobs:
         run: |
           apt-get update
           apt-get upgrade -y
-          apt-get install -y bash git aria2 curl axel wget unzip make libncurses5 m4
+          apt-get install -y bash git aria2 curl axel wget unzip make libncurses5 m4 rsync
           git clone https://gitlab.com/OrangeFox/misc/scripts
           cd scripts
           bash setup/android_build_env.sh

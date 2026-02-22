@@ -1,0 +1,11 @@
+#!/bin/sh
+# Fake sudo: execute commands directly (for use in containers where we are already root)
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -E|-H|-S|-n|-k|-K|-b|-v|-V|-h|-i|-s|-l|-L) shift ;;
+        -u|-g|-r|-t|-p|-c|-C) shift 2 ;;
+        --) shift; break ;;
+        *) break ;;
+    esac
+done
+[ $# -gt 0 ] && exec "$@"

@@ -57,7 +57,7 @@ jobs:
           # wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
           # apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
           # ln -s /lib/x86_64-linux-gnu/libtinfo.so.6 /lib/x86_64-linux-gnu/libtinfo.so.5
-          apt-get install git aria2
+          apt-get install -y git aria2
           git clone https://gitlab.com/OrangeFox/misc/scripts
           cd scripts
           bash setup/android_build_env.sh
@@ -85,7 +85,7 @@ jobs:
           swap-size-gb: 12
 
       - name: Switch to Python2
-        run: apt-get install python2 python-is-python2
+        run: apt-get install -y python2 python-is-python2
         continue-on-error: true
 
       - name: Building recovery

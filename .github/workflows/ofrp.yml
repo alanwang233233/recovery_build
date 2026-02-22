@@ -52,6 +52,9 @@ jobs:
           echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
         id: pwd
 
+      - name: Install sudo compatibility
+        run: cp $GITHUB_WORKSPACE/scripts/sudo /usr/local/bin/sudo && chmod +x /usr/local/bin/sudo
+
       - name: Prepare the build environment
         run: |
           apt-get update

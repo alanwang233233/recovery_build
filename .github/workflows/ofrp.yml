@@ -55,6 +55,12 @@ jobs:
       - name: Install sudo compatibility
         run: cp $GITHUB_WORKSPACE/scripts/sudo /usr/local/bin/sudo && chmod +x /usr/local/bin/sudo
 
+      - name: Install OpenJDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: "8"
+
       - name: Prepare the build environment
         run: |
           apt-get update

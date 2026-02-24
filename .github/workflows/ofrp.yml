@@ -102,11 +102,11 @@ jobs:
           set +e
           source build/envsetup.sh
           export ALLOW_MISSING_DEPENDENCIES=true
+          export FOX_BUILD_RECOVERY_ONLY=0
           set -e
           lunch ${{ env.MAKEFILE_NAME }}-eng && make clean && mka adbd ${{ env.BUILD_TARGET }}image -j$(nproc --all)
         shell: bash
         working-directory: ${{ steps.pwd.outputs.workspace-folder }}
-        continue-on-error: true
 
       - name: Check the output directory before uploading
         run: |
@@ -118,8 +118,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ matrix.DEVICE_NAME }}/*.img
-            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ matrix.DEVICE_NAME }}/*.zip
+            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ matrix.DEVICE_NAME }}/OrangeFox*.img
+            ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ env.MANIFEST_BRANCH }}/out/target/product/${{ matrix.DEVICE_NAME }}/OrangeFox*.zip
           name: OFRP-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
           tag_name: ofrp-${{ matrix.DEVICE_NAME }}-${{ github.run_id }}
           body: |
